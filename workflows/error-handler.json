@@ -1,0 +1,60 @@
+{
+  "name": "Palewood — Error handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e1a00000-0000-4000-8000-000000000001",
+      "name": "On workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#ops-alerts",
+          "mode": "name",
+          "cachedResultName": "ops-alerts"
+        },
+        "text": "=:rotating_light: Workflow \"{{ $json.workflow.name }}\" stopped with an error.\nNode: {{ $json.execution.lastNodeExecuted }}\nMessage: {{ $json.execution.error.message }}\nExecution: {{ $json.execution.id }}\n\nNothing from this run reached the customer. Check the execution before the next kiln run.",
+        "otherOptions": {}
+      },
+      "id": "e1a00000-0000-4000-8000-000000000002",
+      "name": "Tell the team",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        300
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "SLACK_PALEWOOD",
+          "name": "Palewood Slack"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On workflow error": {
+      "main": [
+        [
+          {
+            "node": "Tell the team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
